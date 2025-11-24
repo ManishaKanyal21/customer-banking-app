@@ -1,3 +1,30 @@
+server:
+  port: 8080
+
+# Configuration for database
 spring:
   application:
     name: customer-banking-app
+  datasource:
+    url: jdbc:mysql://mysql-db:3306/banking_db?useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true
+    username: springuser
+    password: ThePassword
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+  # Configuration for the springdoc-openapi (Swagger) UI
+  springdoc:
+    swagger-ui:
+      path: /swagger-ui.html
+    api-docs:
+      path: /v3/api-docs
+    info:
+      title: Customer Banking API Documentation
+      description: API for managing accounts and transactions.
+      version: 1.0.0
+

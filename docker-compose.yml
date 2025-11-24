@@ -1,0 +1,47 @@
+services:
+  # Service 1: MySQL Database
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql_database
+    restart: unless-stopped
+    environment:
+      # Credentials used by the 'banking-app' service to connect to this DB
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: banking_db
+      MYSQL_USER: springuser
+      MYSQL_PASSWORD: ThePassword
+    ports:
+      - "3306:3306"
+    volumes:
+      # Persist database data safely
+      - db_data:/var/lib/mysql
+    # Healthcheck to monitor database readiness
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Service 2: Your Spring Boot Application
+  banking-app:
+    # We use 'build: .' to tell compose to build the image using the local Dockerfile
+    build: .
+    image: customer-banking-image # Name to give the built image
+    container_name: customer_banking_app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+
+    environment:
+      # Required for Swagger UI to generate correct URLs when accessed via localhost
+      springdoc.server.url: http://localhost:8080
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/banking_db?useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true
+      SPRING_DATASOURCE_USERNAME: springuser
+      SPRING_DATASOURCE_PASSWORD: ThePassword
+
+volumes:
+  # Define the volume
+  db_data:
