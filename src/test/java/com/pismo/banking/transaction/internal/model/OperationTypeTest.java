@@ -40,24 +40,4 @@ class OperationTypeTest {
                 .isInstanceOf(InvalidOperationTypeException.class)
                 .hasMessageContaining(String.format("Operation type id %d is invalid.", invalidId));
     }
-
-    @Test
-    @DisplayName("Should throw IllegalArgumentException when ID is zero")
-    void testFromId_ZeroIdThrowsCheckArgument() {
-        int invalidId = 0;
-
-        assertThatThrownBy(() -> OperationType.fromId(invalidId))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Operation type id must be a positive integer.");
-    }
-
-    @Test
-    @DisplayName("Should throw IllegalArgumentException when ID is negative")
-    void testFromId_NegativeIdThrowsCheckArgument() {
-        int invalidId = -1;
-
-        assertThatThrownBy(() -> OperationType.fromId(invalidId))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Operation type id must be a positive integer.");
-    }
 }

@@ -1,6 +1,5 @@
 package com.pismo.banking.transaction.internal.mapper;
 
-import com.pismo.banking.transaction.api.dto.TransactionRequest;
 import com.pismo.banking.transaction.api.dto.TransactionResponse;
 import com.pismo.banking.transaction.internal.model.OperationType;
 import com.pismo.banking.transaction.internal.model.Transaction;
@@ -16,20 +15,42 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TransactionMapperTest {
 
     @Test
-    @DisplayName("Should correctly map all fields from Entity to Response DTO")
-    void testMapEntityToDto_Success() {
-
-        LocalDateTime now = LocalDateTime.now();
-
-        Transaction entity = new Transaction(10L, 1L, OperationType.PURCHASE, new BigDecimal("-50.75"), now);
+    @DisplayName("Should map entity to DTO correctly with positive amount and all other fields")
+    void testToDto_PositiveAmount() {
+        Transaction entity = new Transaction(
+                1L,
+                101L,
+                OperationType.PAYMENT,
+                new BigDecimal("50.00"),
+                LocalDateTime.now()
+        );
 
         TransactionResponse dto = TransactionMapper.toDto(entity);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.transactionId()).isEqualTo(10L);
-        assertThat(dto.accountId()).isEqualTo(1L);
+        assertThat(dto.transactionId()).isEqualTo(1L);
+        assertThat(dto.accountId()).isEqualTo(101L);
+        assertThat(dto.operationTypeId()).isEqualTo(4);
+        assertThat(dto.amount()).isEqualByComparingTo("50.00");
+    }
+
+    @Test
+    @DisplayName("Should map entity to DTO correctly with negative amount and all other fields")
+    void testToDto_NegativeAmount() {
+        Transaction entity = new Transaction(
+                2L,
+                101L,
+                OperationType.PURCHASE,
+                new BigDecimal("-25.50"),
+                LocalDateTime.now()
+        );
+
+        TransactionResponse dto = TransactionMapper.toDto(entity);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.transactionId()).isEqualTo(2L);
         assertThat(dto.operationTypeId()).isEqualTo(1);
-        assertThat(dto.amount()).isEqualTo(new BigDecimal("-50.75"));
+        assertThat(dto.amount()).isEqualByComparingTo("-25.50");
     }
 
     @Test
@@ -40,36 +61,19 @@ class TransactionMapperTest {
     }
 
     @Test
-    @DisplayName("Should correctly map a purchase request (Op 1) and negate the amount")
-    void testMapRequestToEntity_Purchase_NegatesAmount() {
-        TransactionRequest request = new TransactionRequest(1L, 1, new BigDecimal("100.00"));
-        Transaction entity = TransactionMapper.toEntity(request);
+    @DisplayName("Should map details to entity correctly, including setting current time")
+    void testToEntity() {
+        final Long accountId = 202L;
+        final OperationType type = OperationType.WITHDRAWAL;
+        final BigDecimal finalSignedAmount = new BigDecimal("-10.00");
+
+        final Transaction entity = TransactionMapper.toEntity(accountId, type, finalSignedAmount);
 
         assertThat(entity).isNotNull();
-        assertThat(entity.getAccountId()).isEqualTo(1L);
-        assertThat(entity.getOperationType()).isEqualTo(OperationType.PURCHASE);
-        assertThat(entity.getAmount()).isEqualTo(new BigDecimal("-100.00"));
+        assertThat(entity.getAccountId()).isEqualTo(accountId);
+        assertThat(entity.getOperationType()).isEqualTo(type);
+        assertThat(entity.getAmount()).isEqualByComparingTo(finalSignedAmount);
         assertThat(entity.getEventDate()).isNotNull();
         assertThat(entity.getTransactionId()).isNull();
-    }
-
-    @Test
-    @DisplayName("Should correctly map a payment request (Op 4) and keep amount positive")
-    void testMapRequestToEntity_Payment_KeepsAmountPositive() {
-        TransactionRequest request = new TransactionRequest(1L, 4, new BigDecimal("50.25"));
-
-        Transaction entity = TransactionMapper.toEntity(request);
-
-        assertThat(entity).isNotNull();
-        assertThat(entity.getOperationType()).isEqualTo(OperationType.PAYMENT);
-        assertThat(entity.getAmount()).isEqualTo(new BigDecimal("50.25"));
-    }
-
-    @Test
-    @DisplayName("Should return null when mapping a null request DTO to Entity")
-    void testMapRequestToEntity_HandlesNullInput() {
-        Transaction entity = TransactionMapper.toEntity(null);
-
-        assertThat(entity).isNull();
     }
 }

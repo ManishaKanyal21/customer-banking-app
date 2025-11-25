@@ -39,10 +39,4 @@ class AccountMapperTest {
         assertThat(entity.getAccountId()).isNull();
         assertThat(entity.getDocumentNumber()).isEqualTo(request.documentNumber());
     }
-
-    @Test
-    @DisplayName("Should handle null request DTO mapping to Entity")
-    void testMapRequestDtoToEntityHandlesNull() {
-        assertThat(AccountMapper.toEntity(null)).isNull();
-    }
 }

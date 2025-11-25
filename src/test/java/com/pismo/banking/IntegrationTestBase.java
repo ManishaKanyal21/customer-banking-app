@@ -1,9 +1,9 @@
 package com.pismo.banking;
 
+
 import io.restassured.RestAssured;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.RandomUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -22,12 +22,8 @@ public abstract class IntegrationTestBase {
     @LocalServerPort
     protected int port;
 
-    @BeforeEach
-    void setUp() {
-        RestAssured.port = port;
-    }
-
     protected Long createTestAccount(final String documentNumber) {
+        RestAssured.port = port;
         final Long accountId = given()
                 .contentType(APPLICATION_JSON_VALUE)
                 .accept(APPLICATION_JSON_VALUE)
@@ -47,8 +43,6 @@ public abstract class IntegrationTestBase {
     protected static String getAccountPayload(final String documentNumber) {
         return String.format("{\"document_number\": \"%s\"}", documentNumber);
     }
-
-//    private String getBaseUrl() { return "http://localhost:" + port + "/accounts"; }
 
     /**
      * Generates an 11-digit random long number String

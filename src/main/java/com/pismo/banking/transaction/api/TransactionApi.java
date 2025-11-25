@@ -14,10 +14,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * Defines the contract for processing financial transactions via the REST API.
+ * This interface centralizes API documentation and configuration using OpenAPI annotations.
+ */
 @RequestMapping("/transactions")
-@Tag(name = "Transactions Management")
+@Tag(name = "Transaction Management", description = "Transaction management APIs")
 public interface TransactionApi {
 
+    /**
+     * Creates and processes a new financial transaction against a customer account.
+     * This operation applies business logic to validate inputs and determine the
+     * final positive or negative sign of the transaction amount based on the operation type ID.
+     *
+     * @param transactionRequest The request body containing the transaction details like account ID, operation type ID, and amount.
+     * @return A response entity containing the created transaction details (HTTP 201 CREATED).
+     */
     @PostMapping
     @Operation(summary = "Create a new transaction for an account")
     @ApiResponse(responseCode = "201", description = "Transaction created successfully",
@@ -26,5 +38,5 @@ public interface TransactionApi {
             content = @Content(schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(responseCode = "404", description = "Account doesn't exist",
             content = @Content(schema = @Schema(implementation = ApiError.class)))
-    ResponseEntity<TransactionResponse> createTransaction(@Valid @RequestBody TransactionRequest request);
+    ResponseEntity<TransactionResponse> createTransaction(@Valid @RequestBody TransactionRequest transactionRequest);
 }

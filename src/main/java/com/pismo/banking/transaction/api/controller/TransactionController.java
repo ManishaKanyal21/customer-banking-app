@@ -8,6 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST controller implementation for managing transaction processing.
+ * Implements the {@link TransactionApi} contract and delegates business logic to the {@link TransactionService}.
+ */
 @RestController
 public class TransactionController implements TransactionApi {
 

@@ -22,11 +22,10 @@ services:
       timeout: 5s
       retries: 5
 
-  # Service 2: Your Spring Boot Application
+  # Service 2: Spring Boot Application
   banking-app:
-    # We use 'build: .' to tell compose to build the image using the local Dockerfile
     build: .
-    image: customer-banking-image # Name to give the built image
+    image: customer-banking-image
     container_name: customer_banking_app
     restart: unless-stopped
     ports:

@@ -16,15 +16,11 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
-
-  # Configuration for the springdoc-openapi (Swagger) UI
+# Configuration for Swagger UI
   springdoc:
     swagger-ui:
       path: /swagger-ui.html
     api-docs:
       path: /v3/api-docs
-    info:
-      title: Customer Banking API Documentation
-      description: API for managing accounts and transactions.
-      version: 1.0.0
+
 

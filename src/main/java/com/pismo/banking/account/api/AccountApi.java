@@ -14,10 +14,21 @@ import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+/**
+ * Defines the contract for managing customer bank accounts via the REST API.
+ * This interface centralizes API documentation and configuration using OpenAPI annotations.
+ */
 @RequestMapping("/accounts")
-@Tag(name = "Accounts", description = "Account management APIs")
+@Tag(name = "Account Management", description = "Account management APIs")
 public interface AccountApi {
 
+    /**
+     * Creates a new customer bank account.
+     * This operation requires a unique document number to identify the account owner.
+     *
+     * @param accountRequest The request body containing account details.
+     * @return A response entity containing the created account details (HTTP 201 Created).
+     */
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @Operation(summary = "Create a new customer account", description = "Requires a unique document number")
     @ApiResponse(responseCode = "201", description = "Account created successfully",
@@ -28,8 +39,14 @@ public interface AccountApi {
             content = @Content(schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(schema = @Schema(implementation = ApiError.class)))
-    ResponseEntity<AccountResponse> createAccount(@Valid @RequestBody AccountRequest request);
+    ResponseEntity<AccountResponse> createAccount(@Valid @RequestBody AccountRequest accountRequest);
 
+    /**
+     * Retrieves details for an existing account by its unique ID.
+     *
+     * @param accountId The unique identifier for the account.
+     * @return A response entity containing the account details (HTTP 200 OK).
+     */
     @GetMapping(value = "/{accountId}", produces = APPLICATION_JSON_VALUE)
     @Operation(summary = "Retrieve account details by ID")
     @ApiResponse(responseCode = "200", description = "Account details retrieved",

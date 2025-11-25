@@ -1,8 +1,10 @@
 package com.pismo.banking.transaction.internal.service;
 
 import com.pismo.banking.account.api.AccountService;
+import com.pismo.banking.common.exception.AccountNotFoundException;
 import com.pismo.banking.transaction.api.dto.TransactionRequest;
 import com.pismo.banking.transaction.api.dto.TransactionResponse;
+import com.pismo.banking.transaction.internal.exception.InvalidOperationTypeException;
 import com.pismo.banking.transaction.internal.model.OperationType;
 import com.pismo.banking.transaction.internal.model.Transaction;
 import com.pismo.banking.transaction.internal.repository.TransactionRepository;
@@ -16,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -79,5 +82,35 @@ class TransactionServiceImplTest {
         transactionService.createTransaction(transactionRequest);
 
         verify(accountService, times(1)).validateAccountExists(TEST_ACCOUNT_ID);
+        verify(transactionRepository, times(1)).save(any(Transaction.class));
+        verifyNoMoreInteractions(transactionRepository);
+    }
+
+    @Test
+    @DisplayName("Should throw AccountNotFoundException if account validation fails")
+    void testCreateTransaction_AccountNotFound() {
+        doThrow(new AccountNotFoundException(TEST_ACCOUNT_ID)).when(accountService).validateAccountExists(TEST_ACCOUNT_ID);
+
+        TransactionRequest transactionRequest = new TransactionRequest(TEST_ACCOUNT_ID, 1, TEST_AMOUNT);
+
+        assertThatThrownBy(() ->transactionService.createTransaction(transactionRequest))
+                .isInstanceOf(AccountNotFoundException.class)
+                .hasMessageContaining(String.format("Account with id %s not found", TEST_ACCOUNT_ID));
+
+        verify(transactionRepository, never()).save(any(Transaction.class));
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidOperationTypeException if OperationType.fromId fails")
+    void testCreateTransaction_InvalidOperationType() {
+        int invalidOpTypeId = 999;
+        TransactionRequest transactionRequest = new TransactionRequest(TEST_ACCOUNT_ID, invalidOpTypeId, TEST_AMOUNT);
+
+        assertThatThrownBy(() ->transactionService.createTransaction(transactionRequest))
+                .isInstanceOf(InvalidOperationTypeException.class)
+                .hasMessageContaining(String.format("Operation type id %d is invalid.", invalidOpTypeId));
+
+        verify(transactionRepository, never()).save(any(Transaction.class));
+        verify(accountService, never()).validateAccountExists(TEST_ACCOUNT_ID);
     }
 }

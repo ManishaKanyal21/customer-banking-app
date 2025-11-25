@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Represents a customer bank account entity stored in the database.
+ */
 @Entity
 @Table(name = "accounts")
 @Getter

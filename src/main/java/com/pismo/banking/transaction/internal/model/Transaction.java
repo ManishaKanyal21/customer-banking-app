@@ -9,6 +9,9 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Represents a customer's account transaction entity stored in the database.
+ */
 @Entity
 @Table(name = "transactions")
 @Getter
