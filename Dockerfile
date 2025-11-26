@@ -16,7 +16,7 @@ COPY src ./src
 
 # Run the clean package command to create the JAR file in the target directory
 RUN mvn clean package
-#-DskipTests
+
 # --- Stage 2: Run the application using a minimal JRE ---
 # Uses a minimal JRE image (no Maven) for the final, smaller runtime image
 FROM eclipse-temurin:21-jre-alpine
@@ -31,7 +31,7 @@ WORKDIR /app
 # Copy the JAR file from the build stage (maven_build) into this runtime stage
 COPY --from=maven_build /app/target/customer-banking-app-${APP_VERSION}.jar /app/customer-banking-app.jar
 
-# Expose the port your Spring app runs on (8080 by default)
+# Expose the port on which Spring app runs on (8080 by default)
 EXPOSE 8080
 
 # Define the command to run the application when the container starts

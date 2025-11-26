@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-Ensure you have Docker and Docker Compose installed on your system.
+Ensure you have Docker Desktop installed on your system which will install Docker Engine, Docker CLI client, and Docker Compose.
 
 ## Getting Started
 
