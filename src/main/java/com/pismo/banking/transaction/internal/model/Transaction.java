@@ -26,11 +26,10 @@ public class Transaction {
     @Column(nullable = false)
     private Long accountId;
 
-    @Enumerated(EnumType.ORDINAL)
     @Column(nullable = false)
     private OperationType operationType;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal amount;
 
     @Column(nullable = false)

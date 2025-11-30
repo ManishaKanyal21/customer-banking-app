@@ -48,9 +48,9 @@ public class TransactionServiceImpl implements TransactionService {
         final OperationType operationType = OperationType.fromId(transactionRequest.operationTypeId());
         accountService.validateAccountExists(transactionRequest.accountId());
         final BigDecimal amount = transactionRequest.amount();
-        final boolean isCredit = operationType == OperationType.PAYMENT;
+        final boolean isDebit = operationType != OperationType.PAYMENT;
 
-        final BigDecimal finalAmount = isCredit ? amount : amount.negate();
+        final BigDecimal finalAmount = isDebit ? amount.negate() : amount;
         final Transaction transaction = TransactionMapper.toEntity(
                 transactionRequest.accountId(),
                 operationType,

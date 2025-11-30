@@ -8,12 +8,14 @@ Ensure you have Docker Desktop installed on your system which will install Docke
 
 Follow the instructions below to set up and run the customer banking application using Docker Compose :
 
-### 1. Building and Starting the Environment
+### 1. Getting the project, Building and Starting the application
 
 To build the application image, create the network, and start both the application and database containers for the first
 time, use the following command:
 
    ```bash
+   git clone https://github.com/ManishaKanyal21/customer-banking-app.git
+   cd customer-banking-app
    docker-compose up
    ```
 
@@ -61,5 +63,12 @@ and "Database connected..."), we can access the API documentation:
 
 **OpenAPI Spec (JSON)**: http://localhost:8080/v3/api-docs
 
+### 4. Stopping the application :
+
+To stop the running containers and delete the volume: 
+
+```bash 
+   docker-compose down -v
+```
 
    

@@ -35,7 +35,7 @@ public record TransactionRequest(
          */
         @NotNull(message = "Amount is required")
         @DecimalMin(value = "0.01", message = "Amount must be positive, non-zero value.")
-        @Digits(integer = 12, fraction = 2, message = "Amount must have a maximum of 2 fractional digits")
+        @Digits(integer = 10, fraction = 2, message = "Amount must have a maximum of 2 fractional digits")
         @Schema(description = "Transaction amount (always positive, sign is determined by operation type)",
                 example = "123.45", requiredMode = Schema.RequiredMode.REQUIRED)
         BigDecimal amount

@@ -18,6 +18,6 @@ public record AccountRequest(
         @JsonProperty("document_number")
         @NotBlank(message = "Document number is required")
         @Pattern(regexp = "^\\d{11}$", message = "Document number must be 11 digits")
-        @Schema(name="document_number", description = "Customer's document number", example = "12345678900", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Customer's document number", example = "12345678900", requiredMode = Schema.RequiredMode.REQUIRED)
         String documentNumber) {
 }
