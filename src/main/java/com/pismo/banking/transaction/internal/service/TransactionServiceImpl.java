@@ -1,6 +1,8 @@
 package com.pismo.banking.transaction.internal.service;
 
 import com.pismo.banking.account.api.AccountService;
+import com.pismo.banking.account.internal.model.Account;
+import com.pismo.banking.common.exception.InSufficientLimitException;
 import com.pismo.banking.transaction.api.TransactionService;
 import com.pismo.banking.transaction.api.dto.TransactionRequest;
 import com.pismo.banking.transaction.api.dto.TransactionResponse;
@@ -46,17 +48,35 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public TransactionResponse createTransaction(final TransactionRequest transactionRequest) {
         final OperationType operationType = OperationType.fromId(transactionRequest.operationTypeId());
-        accountService.validateAccountExists(transactionRequest.accountId());
-        final BigDecimal amount = transactionRequest.amount();
+
+        final Account account = accountService.findById(transactionRequest.accountId());
+        final BigDecimal balance = account.getBalance();
+        final BigDecimal limit = account.getLimit();
+        final BigDecimal transactionAmount = transactionRequest.amount();
         final boolean isDebit = operationType != OperationType.PAYMENT;
 
-        final BigDecimal finalAmount = isDebit ? amount.negate() : amount;
+        final BigDecimal finalTransactionAmount = isDebit ? transactionAmount.negate() : transactionAmount;
+        final BigDecimal newBalance = finalTransactionAmount.add(balance);
+
+        final BigDecimal availableLimit = newBalance.add(limit);
+
+        if(availableLimit.compareTo(BigDecimal.ZERO)< 0){
+          throw new InSufficientLimitException("The Limit has exceeded");
+        }
+
+        updateAccountWithNewBalance(account, newBalance);
+
         final Transaction transaction = TransactionMapper.toEntity(
                 transactionRequest.accountId(),
                 operationType,
-                finalAmount
+                finalTransactionAmount
         );
         final Transaction savedTransaction = transactionRepository.save(transaction);
         return TransactionMapper.toDto(savedTransaction);
+    }
+
+    private void updateAccountWithNewBalance(final Account account, final BigDecimal newBalance) {
+        account.setBalance(newBalance);
+        accountService.updateAccount(account);
     }
 }

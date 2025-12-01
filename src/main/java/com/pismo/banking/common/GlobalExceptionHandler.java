@@ -1,6 +1,7 @@
 package com.pismo.banking.common;
 
 import com.pismo.banking.common.exception.AccountNotFoundException;
+import com.pismo.banking.common.exception.InSufficientLimitException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -64,6 +65,14 @@ public class GlobalExceptionHandler {
             (final AccountNotFoundException accountNotFoundException) {
         final HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         final ApiError apiError = new ApiError(httpStatus, accountNotFoundException.getMessage());
+        return ResponseEntity.status(httpStatus).body(apiError);
+    }
+
+    @ExceptionHandler(InSufficientLimitException.class)
+    public ResponseEntity<ApiError> handleInSufficientLimitException
+            (final InSufficientLimitException inSufficientLimitException) {
+        final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        final ApiError apiError = new ApiError(httpStatus, inSufficientLimitException.getMessage());
         return ResponseEntity.status(httpStatus).body(apiError);
     }
 }

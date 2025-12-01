@@ -41,7 +41,11 @@ public abstract class IntegrationTestBase {
     }
 
     protected static String getAccountPayload(final String documentNumber) {
-        return String.format("{\"document_number\": \"%s\"}", documentNumber);
+        return """
+                {
+                "document_number" : "%s"
+                }
+                """.formatted(documentNumber);
     }
 
     /**

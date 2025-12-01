@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 /**
  * Represents a customer bank account entity stored in the database.
  */
@@ -22,4 +24,15 @@ public class Account {
 
     @Column(unique = true, nullable = false)
     private String documentNumber;
+
+    @Column(nullable = false)
+    private BigDecimal balance = BigDecimal.ZERO;
+
+    @Column(nullable = false, name = "creditLimit")
+    private BigDecimal limit = new BigDecimal("1000");
+
+    public Account(final Long accountId, final String documentNumber) {
+        this.documentNumber= documentNumber;
+        this.accountId= accountId;
+    }
 }

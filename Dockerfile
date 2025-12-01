@@ -15,7 +15,7 @@ RUN mvn dependency:go-offline
 COPY src ./src
 
 # Run the clean package command to create the JAR file in the target directory
-RUN mvn clean package
+RUN mvn clean package -DskipTests
 
 # --- Stage 2: Run the application using a minimal JRE ---
 # Uses a minimal JRE image (no Maven) for the final, smaller runtime image

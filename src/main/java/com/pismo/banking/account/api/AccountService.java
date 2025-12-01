@@ -3,6 +3,7 @@ package com.pismo.banking.account.api;
 import com.pismo.banking.account.api.dto.AccountResponse;
 import com.pismo.banking.account.api.dto.AccountRequest;
 import com.pismo.banking.account.internal.exception.AccountAlreadyExistsException;
+import com.pismo.banking.account.internal.model.Account;
 import com.pismo.banking.common.exception.AccountNotFoundException;
 
 /**
@@ -38,4 +39,8 @@ public interface AccountService {
      * @throws AccountNotFoundException if no account exists with the provided ID.
      */
     void validateAccountExists(Long accountId);
+
+    Account findById(Long accountId);
+
+    void updateAccount(Account account);
 }

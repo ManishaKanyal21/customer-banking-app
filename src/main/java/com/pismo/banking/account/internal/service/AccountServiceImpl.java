@@ -68,4 +68,15 @@ public class AccountServiceImpl implements AccountService {
             throw new AccountNotFoundException(accountId);
         }
     }
+
+    @Override
+    public Account findById(final Long accountId) {
+        return accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountNotFoundException(accountId));
+    }
+
+    @Override
+    public void updateAccount(final Account account) {
+        accountRepository.save(account);
+    }
 }
